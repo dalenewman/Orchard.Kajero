@@ -1,1 +1,1 @@
-This is an [Orchard CMS](https://github.com/OrchardCMS/Orchard) module to store and host [Kajero](https://github.com/JoelOtter/kajero) notebooks are content items.
+This is an [Orchard CMS](https://github.com/OrchardCMS/Orchard) module to store and host [Kajero](https://github.com/JoelOtter/kajero) notebooks as content items.
