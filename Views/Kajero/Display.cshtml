@@ -1,0 +1,36 @@
+﻿@using Orchard.ContentManagement
+@using Orchard.Core.Common.Models
+@using Orchard.Core.Title.Models
+@model ContentItem
+@{
+    var title = Model.As<TitlePart>().Title;
+    var referer = Request.UrlReferrer == null ? Url.Content("~/") : Request.UrlReferrer.ToString();
+}
+<html>
+<head>
+    <title>@(title) - Kajero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" href="../Modules/Kajero/Styles/main.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <form id="id_save">
+        <input name="title" type="hidden" value="@(title)" id="id_title"/>
+        <input name="user" type="hidden" value="@(Request.RequestContext.HttpContext.User.Identity.Name)" id="id_user"/>
+        <input name="id" type="hidden" value="@Model.Id"/>
+        <input name="__RequestVerificationToken" type="hidden" value="@Html.AntiForgeryTokenValueOrchard()"/>
+        <input id="id_markdown" name="markdown" type="hidden" value=""/>
+    </form>
+    <script type="text/markdown" id="kajero-md">
+        @(Html.Raw(Model.As<BodyPart>().Text))
+    </script>
+    <a href="@referer" class="pull-right">
+        <i class="fa fa-home" aria-hidden="true"></i>
+    </a>
+    <div id="kajero"></div>
+    <script type="text/javascript" src="../Modules/Kajero/Scripts/bundle.js"></script>
+</body>
+
+</html>

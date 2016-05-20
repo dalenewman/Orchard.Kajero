@@ -1,0 +1,12 @@
+﻿Name: Kajero
+AntiForgery: enabled
+Author: Kajero by Joel Auterson. This Orchard CMS module by Dale Newman.
+Website: https://github.com/JoelOtter/kajero
+Version: 0.0.1
+OrchardVersion: 1.8.1
+Description: Kajero Notebooks
+Dependencies: Orchard.ContentPermissions, Orchard.Alias, Orchard.Autoroute
+Features:
+    Kajero:
+        Description: Kajero Notebooks
+		Category: Content
