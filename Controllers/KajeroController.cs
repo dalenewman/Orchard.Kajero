@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Web.Mvc;
 using Kajero.Models;
 using Orchard;
-using Orchard.Alias.Implementation.Holder;
+using Orchard.Alias.Implementation.Storage;
 using Orchard.ContentManagement;
 using Orchard.Core.Common.Models;
 using Orchard.Localization;
@@ -17,17 +15,17 @@ namespace Kajero.Controllers {
     public class KajeroController : Controller {
 
         private readonly IOrchardServices _services;
-        private readonly IAliasHolder _aliasHolder;
+        private readonly IAliasStorage _aliasStorage;
         public ILogger Logger { get; set; }
         public Localizer T { get; set; }
 
 
         public KajeroController(
             IOrchardServices services,
-            IAliasHolder aliasHolder
+            IAliasStorage aliasStorage
         ) {
             _services = services;
-            _aliasHolder = aliasHolder;
+            _aliasStorage = aliasStorage;
             Logger = NullLogger.Instance;
             T = NullLocalizer.Instance;
         }
@@ -35,7 +33,7 @@ namespace Kajero.Controllers {
         [HttpPost]
         public ActionResult Save() {
 
-            // if (User.Identity.IsAuthenticated) {
+            if (User.Identity.IsAuthenticated) {
 
                 var item = _services.ContentManager.Get(Request.Form["id"] == null ? 0 : Convert.ToInt32(Request.Form["id"]));
 
@@ -49,20 +47,22 @@ namespace Kajero.Controllers {
 
                 return new HttpUnauthorizedResult();
 
-            //}
-            //return new HttpUnauthorizedResult();
+            }
+            return new HttpUnauthorizedResult();
         }
 
         public ActionResult Display(string slug) {
 
             if (User.Identity.IsAuthenticated) {
 
-                IDictionary<string, string> routeValues;
-                if (!_aliasHolder.GetMap("Contents").TryGetAlias("Kajero/" + slug, out routeValues)) {
+
+                var path = "Kajero/" + slug;
+                var routeValues = _aliasStorage.Get(path);  //note: this is compatible betwen 1.8 and 1.10
+
+                if(routeValues == null)
                     return new HttpNotFoundResult();
-                }
-                var id = Convert.ToInt32(routeValues["Id"]);
-                var item = _services.ContentManager.Get(id);
+
+                var item = _services.ContentManager.Get(Convert.ToInt32(routeValues["Id"]));
 
                 if (item == null)
                     return new HttpNotFoundResult();
